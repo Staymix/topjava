@@ -42,7 +42,7 @@ public class MealServlet extends HttpServlet {
                 meal = MealsUtil.meals.get(Integer.parseInt(req.getParameter("index")));
                 break;
             case "create":
-                meal = Meal.EMPTY;
+                meal = Meal.getUserMeal();
                 break;
             default:
                 throw new IllegalArgumentException("Action : " + action + " is illegal");

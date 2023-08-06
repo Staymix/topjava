@@ -7,8 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Meal {
 
-    public static final Meal EMPTY = new Meal(LocalDateTime.now(), "", 0, -1);
-
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -33,6 +31,11 @@ public class Meal {
         this.calories = calories;
         this.id = -1;
     }
+
+    public static Meal getUserMeal() {
+        return new Meal(LocalDateTime.now(), "", 1, -1);
+    }
+
 
 
     public LocalDateTime getDateTime() {
