@@ -1,4 +1,4 @@
-<%@ page import="ru.javawebinar.topjava.util.DateFormatter" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
@@ -10,19 +10,18 @@
 <a href="meals">Home</a>
 <hr>
 <c:choose>
-    <c:when test="${meals.id > 0}">
+    <c:when test="${meals.id != null}">
         <h2>Edit meal</h2>
     </c:when>
     <c:otherwise>
         <h2>Add meal</h2>
     </c:otherwise>
 </c:choose>
-
 <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="id" value="${meals.id}">
     <p>
         <dt>DateTime: <input type="datetime-local" name="date"
-                             value="${DateFormatter.formatLocalDateTime(meals.dateTime, "yyyy-MM-dd HH:mm")}" required>
+                             value="${meals.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}" required>
         </dt>
     </p>
     <p>
