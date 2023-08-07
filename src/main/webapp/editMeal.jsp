@@ -7,16 +7,9 @@
     <title>Meal</title>
 </head>
 <body>
-<a href="meals">Home</a>
+<a href="meals">Meals</a>
 <hr>
-<c:choose>
-    <c:when test="${meals.id != null}">
-        <h2>Edit meal</h2>
-    </c:when>
-    <c:otherwise>
-        <h2>Add meal</h2>
-    </c:otherwise>
-</c:choose>
+<h2>${meals.id != null ? "Edit meal" : "Add meal"}</h2>
 <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="id" value="${meals.id}">
     <p>
