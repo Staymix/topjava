@@ -1,6 +1,6 @@
-<%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://example.com/functions" prefix="f" %>
 <html>
 <head>
     <jsp:useBean id="meals" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
@@ -21,7 +21,7 @@
     <input type="hidden" name="id" value="${meals.id}">
     <p>
         <dt>DateTime: <input type="datetime-local" name="date"
-                             value="${meals.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}" required>
+                             value="${f:formatLocalDateTime(meals.dateTime, "yyyy-MM-dd HH:mm")}" required>
         </dt>
     </p>
     <p>
