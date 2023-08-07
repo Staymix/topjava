@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.ArrayList;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -23,7 +23,7 @@ public class MealServlet extends HttpServlet {
 
     private MealRepository repository;
 
-    private final int LIMIT_CALORIES = 2000;
+    private static final int LIMIT_CALORIES = 2000;
 
     @Override
     public void init() throws ServletException {
@@ -34,10 +34,7 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if (action == null) {
-            log.info("Action = null");
-            req.setAttribute("meals", MealsUtil.getWithExceeded((List<Meal>) repository.getMeals(), LIMIT_CALORIES));
-            req.getRequestDispatcher("/meals.jsp").forward(req, resp);
-            return;
+            action = "unknown";
         }
         Meal meal;
         int id;
@@ -59,7 +56,7 @@ public class MealServlet extends HttpServlet {
                 break;
             default:
                 log.info("Default, Unknown action");
-                req.setAttribute("meals", MealsUtil.getWithExceeded((List<Meal>) repository.getMeals(), LIMIT_CALORIES));
+                req.setAttribute("meals", MealsUtil.getWithExceeded(new ArrayList<>(repository.getMeals()), LIMIT_CALORIES));
                 req.getRequestDispatcher("/meals.jsp").forward(req, resp);
                 return;
         }
@@ -72,8 +69,8 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("Processing a meal addition request...");
         req.setCharacterEncoding("UTF-8");
-        Integer id = (req.getParameter("id").isEmpty() ? null : Integer.parseInt(req.getParameter("id")));
-        repository.save(new Meal(id, LocalDateTime.parse(req.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")),
+        Integer id = req.getParameter("id").isEmpty() ? null : Integer.parseInt(req.getParameter("id"));
+        repository.save(new Meal(id, LocalDateTime.parse(req.getParameter("date"), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 req.getParameter("description"), Integer.parseInt(req.getParameter("calories"))));
         resp.sendRedirect("meals");
         log.info("Meal added successfully.");
