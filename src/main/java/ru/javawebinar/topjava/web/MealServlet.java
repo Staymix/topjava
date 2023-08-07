@@ -55,7 +55,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "create":
                 log.info("Creating new Meal");
-                meal = Meal.getUserMeal();
+                meal = new Meal(LocalDateTime.now().withSecond(0).withNano(0), "", 1);
                 break;
             default:
                 log.info("Default, Unknown action");
@@ -73,8 +73,8 @@ public class MealServlet extends HttpServlet {
         log.info("Processing a meal addition request...");
         req.setCharacterEncoding("UTF-8");
         Integer id = (req.getParameter("id").isEmpty() ? null : Integer.parseInt(req.getParameter("id")));
-        repository.addMeal(new Meal(LocalDateTime.parse(req.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")),
-                req.getParameter("description"), Integer.parseInt(req.getParameter("calories")), id));
+        repository.addMeal(new Meal(id, LocalDateTime.parse(req.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")),
+                req.getParameter("description"), Integer.parseInt(req.getParameter("calories"))));
         resp.sendRedirect("meals");
         log.info("Meal added successfully.");
     }
