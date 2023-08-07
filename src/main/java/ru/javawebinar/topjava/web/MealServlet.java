@@ -45,13 +45,13 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 id = Integer.parseInt(req.getParameter("id"));
                 log.info("Deleting meal with id: " + id);
-                repository.deleteMeal(id);
+                repository.delete(id);
                 resp.sendRedirect("meals");
                 return;
             case "update":
                 id = Integer.parseInt(req.getParameter("id"));
                 log.info("Updating meal with id: " + id);
-                meal = repository.getMeal(id);
+                meal = repository.getAll(id);
                 break;
             case "create":
                 log.info("Creating new Meal");
@@ -73,7 +73,7 @@ public class MealServlet extends HttpServlet {
         log.info("Processing a meal addition request...");
         req.setCharacterEncoding("UTF-8");
         Integer id = (req.getParameter("id").isEmpty() ? null : Integer.parseInt(req.getParameter("id")));
-        repository.addMeal(new Meal(id, LocalDateTime.parse(req.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")),
+        repository.save(new Meal(id, LocalDateTime.parse(req.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")),
                 req.getParameter("description"), Integer.parseInt(req.getParameter("calories"))));
         resp.sendRedirect("meals");
         log.info("Meal added successfully.");
