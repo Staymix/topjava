@@ -14,7 +14,7 @@
     <input type="hidden" name="id" value="${meals.id}">
     <p>
         <dt>DateTime: <input type="datetime-local" name="date"
-                             value="${f:formatLocalDateTime(meals.dateTime, "yyyy-MM-dd HH:mm")}" required>
+                             value="${f:formatLocalDateTime(meals.dateTime)}" required>
         </dt>
     </p>
     <p>

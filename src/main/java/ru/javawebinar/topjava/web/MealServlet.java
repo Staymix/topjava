@@ -12,18 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
-
     private static final Logger log = getLogger(MealServlet.class);
-
-    private MealRepository repository;
-
     private static final int LIMIT_CALORIES = 2000;
+    private MealRepository repository;
 
     @Override
     public void init() throws ServletException {
@@ -41,22 +38,22 @@ public class MealServlet extends HttpServlet {
         switch (action) {
             case "delete":
                 id = Integer.parseInt(req.getParameter("id"));
-                log.info("Deleting meal with id: " + id);
+                log.info("Deleting meal with id: {}", id);
                 repository.delete(id);
                 resp.sendRedirect("meals");
                 return;
             case "update":
                 id = Integer.parseInt(req.getParameter("id"));
-                log.info("Updating meal with id: " + id);
-                meal = repository.getAll(id);
+                log.info("Updating meal with id: {}", id);
+                meal = repository.get(id);
                 break;
             case "create":
                 log.info("Creating new Meal");
-                meal = new Meal(LocalDateTime.now().withSecond(0).withNano(0), "", 1);
+                meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1);
                 break;
             default:
                 log.info("Default, Unknown action");
-                req.setAttribute("meals", MealsUtil.getWithExceeded(new ArrayList<>(repository.getMeals()), LIMIT_CALORIES));
+                req.setAttribute("meals", MealsUtil.getWithExceeded(new ArrayList<>(repository.getAll()), LIMIT_CALORIES));
                 req.getRequestDispatcher("/meals.jsp").forward(req, resp);
                 return;
         }
@@ -70,9 +67,9 @@ public class MealServlet extends HttpServlet {
         log.info("Processing a meal addition request...");
         req.setCharacterEncoding("UTF-8");
         Integer id = req.getParameter("id").isEmpty() ? null : Integer.parseInt(req.getParameter("id"));
-        repository.save(new Meal(id, LocalDateTime.parse(req.getParameter("date"), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                req.getParameter("description"), Integer.parseInt(req.getParameter("calories"))));
+        repository.save(new Meal(id, LocalDateTime.parse(req.getParameter("date")), req.getParameter("description"),
+                Integer.parseInt(req.getParameter("calories"))));
         resp.sendRedirect("meals");
-        log.info("Meal added successfully.");
+        log.info((id == null ? "Meal added " : "Updating meal with id: {} "), id);
     }
 }

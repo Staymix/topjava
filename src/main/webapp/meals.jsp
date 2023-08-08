@@ -22,7 +22,7 @@
     <c:forEach var="meal" items="${meals}">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
         <tr style="color: ${(meal.excess ? "red" : "greenyellow")}">
-            <th>${f:formatLocalDateTime(meal.dateTime, "yyyy-MM-dd HH:mm")}</th>
+            <th>${f:formatLocalDateTime(meal.dateTime)}</th>
             <th>${meal.description}</th>
             <th>${meal.calories}</th>
             <th><a href="meals?id=${meal.id}&action=update">Update</a></th>

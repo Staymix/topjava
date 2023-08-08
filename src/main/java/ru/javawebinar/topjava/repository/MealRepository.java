@@ -10,7 +10,7 @@ public interface MealRepository {
 
     Meal save(Meal meal);
 
-    Meal getAll(int id);
+    Meal get(int id);
 
-    Collection<Meal> getMeals();
+    Collection<Meal> getAll();
 }
