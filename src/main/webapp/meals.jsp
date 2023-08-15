@@ -21,6 +21,23 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <form action="meals" method="get">
+        <input type="hidden" name="action" value="filter">
+        <dl>
+            <dt>От даты (включая):</dt>
+            <dd><input type="date" name="startDate"></dd>
+            <dt>До даты (включая):</dt>
+            <dd><input type="date" name="endDate"></dd>
+        </dl>
+        <dl>
+            <dt>От времени (включая):</dt>
+            <dd><input type="time" name="startTime"></dd>
+            <dt>До времени (включая):</dt>
+            <dd><input type="time" name="endTime"></dd>
+        </dl>
+        <button type="submit">Отфильтровать</button>
+    </form>
+    <hr>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

@@ -35,6 +35,12 @@ public class MealsUtil {
         return filterByPredicate(meals, caloriesPerDay, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime));
     }
 
+    public static List<MealTo> getFilteredMealTo(List<MealTo> meals, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        return meals.stream()
+                .filter(mealTo -> DateTimeUtil.isBetweenClosed(mealTo.getDateTime(), startDate, endDate, startTime, endTime))
+                .collect(Collectors.toList());
+    }
+
     public static boolean belongsToUser(Meal meal, int userId) {
         return meal.getUserId() == userId;
     }
