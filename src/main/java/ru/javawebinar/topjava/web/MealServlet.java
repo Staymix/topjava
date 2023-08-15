@@ -74,6 +74,7 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
+                log.info("Filter");
                 String startDate = request.getParameter("startDate");
                 String endDate = request.getParameter("endDate");
                 String startTime = request.getParameter("startTime");
@@ -87,7 +88,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                log.info("getAll");
+                log.info("GetAll");
                 request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
