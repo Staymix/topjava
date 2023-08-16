@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -31,14 +32,17 @@ public class InMemoryMealRepository implements MealRepository {
         return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
+
     @Override
     public boolean delete(int userId, int id) {
+        ValidationUtil.checkNotFoundWithId(repository.get(id), id);
         if (MealsUtil.belongsToUser(repository.get(id), userId)) return repository.remove(id) != null;
         return false;
     }
 
     @Override
     public Meal get(int userId, int id) {
+        ValidationUtil.checkNotFoundWithId(repository.get(id), id);
         if (MealsUtil.belongsToUser(repository.get(id), userId)) return repository.get(id);
         return null;
     }

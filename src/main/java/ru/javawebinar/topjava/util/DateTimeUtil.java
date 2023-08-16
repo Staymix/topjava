@@ -16,7 +16,7 @@ public class DateTimeUtil {
         LocalDate ld = ldt.toLocalDate();
         if (ld.compareTo(startDate) >= 0 && ld.compareTo(endDate) <= 0) {
             LocalTime lt = ldt.toLocalTime();
-            return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) <= 0;
+            return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) < 0;
         }
         return false;
     }
