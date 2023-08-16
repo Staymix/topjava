@@ -17,10 +17,10 @@ public class SpringMain {
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
-            mealRestController.save(new Meal(null, null, LocalDateTime.now(), "asd", 1));
+            mealRestController.save(new Meal(null, LocalDateTime.now(), "asd", 1, null));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
-            adminUserController.getByMail("asd");
+            adminUserController.getByMail("email@mail.ru");
         }
     }
 }
