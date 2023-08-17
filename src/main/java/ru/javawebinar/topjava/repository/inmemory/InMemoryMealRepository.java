@@ -6,7 +6,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -29,16 +28,16 @@ public class InMemoryMealRepository implements MealRepository {
     public Meal save(int userId, Meal meal) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            if (meal.getUserId() == null) meal.setUserId(SecurityUtil.authUserId());
+            if (meal.getUserId() == null) meal.setUserId(userId);
             repository.put(meal.getId(), meal);
             return meal;
         }
-        getAll(SecurityUtil.authUserId()).stream()
+        getAll(userId).stream()
                 .filter(meal1 -> meal.getId().equals(meal1.getId()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(
-                        "Meal id: " + meal.getId() + " does not belong to the user id: " + SecurityUtil.authUserId()));
-        meal.setUserId(SecurityUtil.authUserId());
+                        "Meal id: " + meal.getId() + " does not belong to the user id: " + userId));
+        meal.setUserId(userId);
         return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
@@ -65,9 +64,9 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> filterByDate(LocalDate startDate, LocalDate endDate) {
+    public Collection<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {
         return repository.values().stream()
-                .filter(meal -> meal.getUserId() == SecurityUtil.authUserId())
+                .filter(meal -> meal.getUserId() == userId)
                 .filter(meal -> !meal.getDate().isBefore(startDate) && !meal.getDate().isAfter(endDate))
                 .collect(Collectors.toList());
     }
