@@ -53,7 +53,6 @@ public class MealRestController {
 
     public List<MealTo> filterByDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("filter");
-        return MealsUtil.getFilteredMealTo(MealsUtil.getTos(service.getAll(), 2000),
-                startDate, endDate, startTime, endTime);
+        return MealsUtil.getTos(MealsUtil.getFilteredMealByTime(service.filterByDate(startDate, endDate), startTime, endTime), 2000);
     }
 }

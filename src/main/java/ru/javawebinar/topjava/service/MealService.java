@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
@@ -36,5 +37,9 @@ public class MealService {
 
     public List<Meal> getAll() {
         return (List<Meal>) repository.getAll(authUserId());
+    }
+
+    public List<Meal> filterByDate(LocalDate startDate, LocalDate endDate) {
+        return (List<Meal>) repository.filterByDate(startDate, endDate);
     }
 }
