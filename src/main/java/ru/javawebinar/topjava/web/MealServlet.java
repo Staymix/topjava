@@ -22,9 +22,6 @@ import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-
-//        private MealRepository repository;
-
     private MealRestController mealRestController;
     private ConfigurableApplicationContext appCtx;
 
@@ -32,7 +29,6 @@ public class MealServlet extends HttpServlet {
     public void init() {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = appCtx.getBean(MealRestController.class);
-//        repository = new InMemoryMealRepository();
     }
 
     @Override
@@ -42,8 +38,7 @@ public class MealServlet extends HttpServlet {
         Meal meal;
         boolean isEmptyId = id.isEmpty();
         meal = new Meal((isEmptyId ? null : Integer.valueOf(id)), LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"), Integer.parseInt(request.getParameter("calories")),
-                SecurityUtil.authUserId());
+                request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (isEmptyId) {
             mealRestController.save(meal);

@@ -5,6 +5,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -26,12 +28,18 @@ public class InMemoryMealRepository implements MealRepository {
     public Meal save(int userId, Meal meal) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
+            if (meal.getUserId() == null) meal.setUserId(SecurityUtil.authUserId());
             repository.put(meal.getId(), meal);
             return meal;
         }
+        getAll(SecurityUtil.authUserId()).stream()
+                .filter(meal1 -> meal.getId().equals(meal1.getId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(
+                        "Meal id: " + meal.getId() + " does not belong to the user id: " + SecurityUtil.authUserId()));
+        meal.setUserId(SecurityUtil.authUserId());
         return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
-
 
     @Override
     public boolean delete(int userId, int id) {
@@ -50,9 +58,8 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Collection<Meal> getAll(int userId) {
         return repository.values().stream()
-                .filter(user -> user.getUserId() == userId)
+                .filter(meal -> meal.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 }
-
