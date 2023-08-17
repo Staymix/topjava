@@ -8,8 +8,8 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,7 +56,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         return repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
@@ -64,7 +64,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {
+    public List<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {
         return repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
                 .filter(meal -> !meal.getDate().isBefore(startDate) && !meal.getDate().isAfter(endDate))

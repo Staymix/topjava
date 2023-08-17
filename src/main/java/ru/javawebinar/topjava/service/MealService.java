@@ -6,7 +6,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +38,6 @@ public class MealService {
     }
 
     public List<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {
-        return new ArrayList<>(repository.filterByDate(startDate, endDate, userId));
+        return repository.filterByDate(startDate, endDate, userId);
     }
 }
