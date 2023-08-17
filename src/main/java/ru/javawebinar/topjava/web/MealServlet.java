@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -77,11 +75,11 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("startTime", startTime);
                 String endTime = request.getParameter("endTime");
                 request.setAttribute("endTime", endTime);
-                request.setAttribute("meals", MealsUtil.getFilteredMealTo(mealRestController.getAll(),
-                        (startDate.isEmpty() ? LocalDate.MIN : LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE)),
-                        (endDate.isEmpty() ? LocalDate.MAX : LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE)),
-                        (startTime.isEmpty() ? LocalTime.MIN : LocalTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_TIME)),
-                        (endTime.isEmpty() ? LocalTime.MAX : LocalTime.parse(endTime, DateTimeFormatter.ISO_LOCAL_TIME))));
+                request.setAttribute("meals", mealRestController.filterByDateTime(
+                        (startDate.isEmpty() ? LocalDate.MIN : LocalDate.parse(startDate)),
+                        (endDate.isEmpty() ? LocalDate.MAX : LocalDate.parse(endDate)),
+                        (startTime.isEmpty() ? LocalTime.MIN : LocalTime.parse(startTime)),
+                        (endTime.isEmpty() ? LocalTime.MAX : LocalTime.parse(endTime))));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
