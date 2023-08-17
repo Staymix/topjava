@@ -36,7 +36,7 @@ public class InMemoryMealRepository implements MealRepository {
                 .filter(meal1 -> meal.getId().equals(meal1.getId()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(
-                        "Meal id: " + meal.getId() + " does not belong to the user id: " + userId));
+                        "Meal id=" + meal.getId() + " does not belong to the user id=" + userId));
         meal.setUserId(userId);
         return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
@@ -44,15 +44,16 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int userId, int id) {
         ValidationUtil.checkNotFoundWithId(repository.get(id), id);
-        if (MealsUtil.belongsToUser(repository.get(id), userId)) return repository.remove(id) != null;
-        return false;
+        return MealsUtil.belongsToUser(repository.get(id), userId) && repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int userId, int id) {
-        ValidationUtil.checkNotFoundWithId(repository.get(id), id);
-        if (MealsUtil.belongsToUser(repository.get(id), userId)) return repository.get(id);
-        return null;
+        Meal meal = ValidationUtil.checkNotFoundWithId(repository.get(id), id);
+        if (!MealsUtil.belongsToUser(meal, userId)) {
+            throw new NotFoundException("Meal with id=" + id + " is not present for user with id=" + userId);
+        }
+        return meal;
     }
 
     @Override
