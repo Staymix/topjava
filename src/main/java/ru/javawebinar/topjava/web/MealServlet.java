@@ -39,9 +39,9 @@ public class MealServlet extends HttpServlet {
                 request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (isEmptyId) {
-            mealRestController.save(meal);
+            mealRestController.create(meal);
         } else {
-            mealRestController.update(meal);
+            mealRestController.update(meal, meal.getId());
         }
         response.sendRedirect("meals");
     }
