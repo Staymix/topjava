@@ -21,11 +21,11 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(1, meal));
+        MealsUtil.meals.forEach(meal -> save(meal, 1));
     }
 
     @Override
-    public Meal save(int userId, Meal meal) {
+    public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             if (meal.getUserId() == null) meal.setUserId(userId);
@@ -42,13 +42,13 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public boolean delete(int userId, int id) {
+    public boolean delete(int id, int userId) {
         ValidationUtil.checkNotFoundWithId(repository.get(id), id);
         return MealsUtil.belongsToUser(repository.get(id), userId) && repository.remove(id) != null;
     }
 
     @Override
-    public Meal get(int userId, int id) {
+    public Meal get(int id, int userId) {
         Meal meal = ValidationUtil.checkNotFoundWithId(repository.get(id), id);
         if (!MealsUtil.belongsToUser(meal, userId)) {
             throw new NotFoundException("Meal with id=" + id + " is not present for user with id=" + userId);

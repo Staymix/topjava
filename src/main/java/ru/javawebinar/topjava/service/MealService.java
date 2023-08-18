@@ -17,24 +17,24 @@ public class MealService {
         this.repository = repository;
     }
 
-    public Meal save(Meal meal, int userId) {
-        return repository.save(userId, meal);
+    public Meal create(Meal meal, int userId) {
+        return repository.save(meal, userId);
     }
 
-    public Meal update(Meal meal, int id, int userId) {
-        return ValidationUtil.checkNotFoundWithId(repository.save(userId, meal), id);
+    public Meal update(Meal meal, int userId) {
+        return ValidationUtil.checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
     public void delete(int id, int userId) {
-        ValidationUtil.checkNotFoundWithId(repository.delete(userId, id), id);
+        ValidationUtil.checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
     public Meal get(int id, int userId) {
-        return ValidationUtil.checkNotFoundWithId(repository.get(userId, id), id);
+        return ValidationUtil.checkNotFoundWithId(repository.get(id, userId), id);
     }
 
     public List<Meal> getAll(int userId) {
-        return (List<Meal>) repository.getAll(userId);
+        return repository.getAll(userId);
     }
 
     public List<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {

@@ -32,13 +32,13 @@ public class MealRestController {
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.save(meal, authUserId());
+        return service.create(meal, authUserId());
     }
 
     public Meal update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
-        return service.update(meal, id, authUserId());
+        return service.update(meal, authUserId());
     }
 
     public List<MealTo> getAll() {
