@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -57,6 +58,10 @@ public class MealRestController {
 
     public List<MealTo> filterByDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("filter");
-        return MealsUtil.getTos(MealsUtil.getFilteredMealByTime(service.filterByDate(startDate, endDate, SecurityUtil.authUserId()), startTime, endTime), 2000);
+        return MealsUtil.getFilteredMealByTime(service.filterByDate(startDate, endDate, SecurityUtil.authUserId()), startTime, endTime)
+                .stream()
+                .flatMap(meal -> getAll().stream()
+                        .filter(mealTo -> meal.getId().equals(mealTo.getId())))
+                .collect(Collectors.toList());
     }
 }
