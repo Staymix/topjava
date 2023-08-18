@@ -4,8 +4,6 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -29,32 +27,20 @@ public class InMemoryMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            if (meal.getUserId() == null) meal.setUserId(userId);
-            repository.put(meal.getId(), meal);
-            return meal;
+            meal.setUserId(userId);
+            return repository.put(meal.getId(), meal);
         }
-        getAll(userId).stream()
-                .filter(meal1 -> meal.getId().equals(meal1.getId()))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(
-                        "Meal id=" + meal.getId() + " does not belong to the user id=" + userId));
-        meal.setUserId(userId);
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return repository.get(meal.getId()).getUserId().equals(userId) ? repository.put(meal.getId(), meal) : null;
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        ValidationUtil.checkNotFoundWithId(repository.get(id), id);
-        return MealsUtil.belongsToUser(repository.get(id), userId) && repository.remove(id) != null;
+        return repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal = ValidationUtil.checkNotFoundWithId(repository.get(id), id);
-        if (!MealsUtil.belongsToUser(meal, userId)) {
-            throw new NotFoundException("Meal with id=" + id + " is not present for user with id=" + userId);
-        }
-        return meal;
+        return repository.get(id);
     }
 
     @Override

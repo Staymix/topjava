@@ -3,7 +3,9 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,15 +24,24 @@ public class MealService {
     }
 
     public Meal update(Meal meal, int userId) {
-        return ValidationUtil.checkNotFoundWithId(repository.save(meal, userId), meal.getId());
+        Meal updateMeal = repository.save(meal, userId);
+        if (updateMeal == null) {
+            throw new NotFoundException("Meal id=" + meal.getId() + " does not belong to the user id=" + userId);
+        }
+        return updateMeal;
     }
 
     public void delete(int id, int userId) {
+        MealsUtil.belongsToUser(repository.get(id, userId), userId);
         ValidationUtil.checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
     public Meal get(int id, int userId) {
-        return ValidationUtil.checkNotFoundWithId(repository.get(id, userId), id);
+        Meal meal = repository.get(id, userId);
+        if (!MealsUtil.belongsToUser(meal, userId)) {
+            throw new NotFoundException("Meal with id=" + id + " is not present for user with id=" + userId);
+        }
+        return meal;
     }
 
     public List<Meal> getAll(int userId) {
