@@ -25,15 +25,15 @@
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt>От даты (включая):</dt>
-            <dd><input type="date" name="startDate" value="${requestScope.startDate}"></dd>
+            <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
             <dt>До даты (включая):</dt>
-            <dd><input type="date" name="endDate" value="${requestScope.endDate}"></dd>
+            <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
         </dl>
         <dl>
             <dt>От времени (включая):</dt>
-            <dd><input type="time" name="startTime" value="${requestScope.startTime}"></dd>
+            <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
             <dt>До времени (включая):</dt>
-            <dd><input type="time" name="endTime" value="${requestScope.endTime}"></dd>
+            <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
         </dl>
         <button type="submit">Отфильтровать</button>
     </form>

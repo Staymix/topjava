@@ -58,7 +58,9 @@ public class MealRestController {
 
     public List<MealTo> filterByDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("filter");
-        return MealsUtil.getFilteredMealByTime(service.filterByDate(startDate, endDate, SecurityUtil.authUserId()), startTime, endTime)
+        return MealsUtil.getFilteredMealByTime(service.filterByDate(startDate == null ? LocalDate.MIN : startDate,
+                                endDate == null ? LocalDate.MAX : endDate, SecurityUtil.authUserId()),
+                        startTime == null ? LocalTime.MIN : startTime, endTime == null ? LocalTime.MAX : endTime)
                 .stream()
                 .flatMap(meal -> getAll().stream()
                         .filter(mealTo -> meal.getId().equals(mealTo.getId())))
