@@ -38,6 +38,7 @@ public class MealService {
 
     public Meal get(int id, int userId) {
         Meal meal = repository.get(id, userId);
+        ValidationUtil.checkNotFoundWithId(meal, id);
         if (!MealsUtil.belongsToUser(meal, userId)) {
             throw new NotFoundException("Meal with id=" + id + " is not present for user with id=" + userId);
         }
