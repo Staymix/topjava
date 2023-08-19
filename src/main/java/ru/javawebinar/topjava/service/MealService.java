@@ -28,6 +28,7 @@ public class MealService {
         if (updateMeal == null) {
             throw new NotFoundException("Meal id=" + meal.getId() + " does not belong to the user id=" + userId);
         }
+        ValidationUtil.checkNotFoundWithId(MealsUtil.belongsToUser(updateMeal, userId), userId);
         return updateMeal;
     }
 
