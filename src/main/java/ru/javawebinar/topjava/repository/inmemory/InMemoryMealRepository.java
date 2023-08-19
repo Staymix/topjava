@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -28,10 +29,17 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
-            return repository.put(meal.getId(), meal);
+            repository.put(meal.getId(), meal);
+            return meal;
         }
-        Meal updateMeal = repository.get(meal.getId());
-        return updateMeal == null ? null : (meal.getUserId().equals(userId) ? repository.put(meal.getId(), meal) : null);
+        Meal updateMeal = getAll(userId).stream()
+                .filter(meal1 -> meal1.getId().equals(meal.getId()))
+                .findFirst()
+                .orElse(null);
+        if (updateMeal == null) return null;
+        meal.setUserId(userId);
+        repository.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
@@ -46,21 +54,19 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getMealByIdForUser(userId).stream()
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
+        return getMealByPredicate(meal -> meal.getUserId() == userId, Comparator.comparing(Meal::getDateTime).reversed());
     }
 
     @Override
     public List<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {
-        return getMealByIdForUser(userId).stream()
-                .filter(meal -> !meal.getDate().isBefore(startDate) && !meal.getDate().isAfter(endDate))
-                .collect(Collectors.toList());
+        return getMealByPredicate(meal -> !meal.getDate().isBefore(startDate)
+                && !meal.getDate().isAfter(endDate), Comparator.comparing(Meal::getDateTime).reversed());
     }
 
-    private List<Meal> getMealByIdForUser(int userId) {
+    private List<Meal> getMealByPredicate(Predicate<Meal> filter, Comparator<Meal> sorted) {
         return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userId)
+                .filter(filter)
+                .sorted(sorted)
                 .collect(Collectors.toList());
     }
 }

@@ -26,23 +26,25 @@ public class MealService {
     public Meal update(Meal meal, int userId) {
         Meal updateMeal = repository.save(meal, userId);
         if (updateMeal == null) {
-            throw new NotFoundException("Meal id=" + meal.getId() + " does not belong to the user id=" + userId);
+            throw new NotFoundException("Meal with such id was not found");
         }
         ValidationUtil.checkNotFoundWithId(MealsUtil.belongsToUser(updateMeal, userId), userId);
         return updateMeal;
     }
 
     public void delete(int id, int userId) {
-        MealsUtil.belongsToUser(get(id, userId), userId);
-        ValidationUtil.checkNotFoundWithId(repository.delete(id, userId), id);
+        if (!MealsUtil.belongsToUser(get(id, userId), userId)) {
+            throw new NotFoundException("Meal with such id was not found");
+        }
+        repository.delete(id, userId);
     }
 
     public Meal get(int id, int userId) {
         Meal meal = repository.get(id, userId);
-        ValidationUtil.checkNotFoundWithId(meal, id);
-        if (!MealsUtil.belongsToUser(meal, userId)) {
-            throw new NotFoundException("Meal with id=" + id + " is not present for user with id=" + userId);
+        if (meal == null) {
+            throw new NotFoundException("Meal with such id was not found");
         }
+        ValidationUtil.checkNotFound(MealsUtil.belongsToUser(meal, userId), String.valueOf(id));
         return meal;
     }
 
