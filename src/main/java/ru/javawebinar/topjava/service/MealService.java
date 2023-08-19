@@ -32,7 +32,7 @@ public class MealService {
     }
 
     public void delete(int id, int userId) {
-        MealsUtil.belongsToUser(repository.get(id, userId), userId);
+        MealsUtil.belongsToUser(get(id, userId), userId);
         ValidationUtil.checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
