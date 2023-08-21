@@ -33,7 +33,7 @@ public class InMemoryMealRepository implements MealRepository {
             return meal;
         }
         Meal existingMeal = repository.get(meal.getId());
-        if (existingMeal != null && existingMeal.getUserId().equals(userId)) {
+        if (existingMeal != null && MealsUtil.belongsToUser(existingMeal, userId)) {
             meal.setUserId(userId);
             return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
         }
@@ -43,31 +43,32 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         Meal meal = repository.get(id);
-        if (meal != null) {
-            return MealsUtil.belongsToUser(meal, userId) && repository.remove(id) != null;
-        }
-        return false;
+        return meal != null && MealsUtil.belongsToUser(meal, userId) && repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         Meal meal = repository.get(id);
-        return MealsUtil.belongsToUser(meal, userId) ? meal : null;
+        if (meal != null) {
+            return MealsUtil.belongsToUser(meal, userId) ? meal : null;
+        }
+        return null;
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return filteredByPredicate(meal -> meal.getUserId().equals(userId));
+        return filteredByPredicate(meal -> true, userId);
     }
 
     @Override
     public List<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {
-        return filteredByPredicate(meal -> meal.getUserId().equals(userId) && !meal.getDate().isBefore(startDate)
-                && !meal.getDate().isAfter(endDate));
+        return filteredByPredicate(meal -> !meal.getDate().isBefore(startDate)
+                && !meal.getDate().isAfter(endDate), userId);
     }
 
-    private List<Meal> filteredByPredicate(Predicate<Meal> filter) {
+    private List<Meal> filteredByPredicate(Predicate<Meal> filter, int userId) {
         return repository.values().stream()
+                .filter(meal -> meal.getUserId().equals(userId))
                 .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
