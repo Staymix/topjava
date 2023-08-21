@@ -3,12 +3,11 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class MealService {
@@ -24,17 +23,17 @@ public class MealService {
     }
 
     public Meal update(Meal meal, int userId) {
-        ValidationUtil.checkNotFound(repository.save(meal, userId), String.valueOf(meal.getId()));
+        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
         return meal;
     }
 
     public void delete(int id, int userId) {
-        ValidationUtil.checkNotFound(repository.delete(id, userId), String.valueOf(id));
+        checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
     public Meal get(int id, int userId) {
         Meal meal = repository.get(id, userId);
-        ValidationUtil.checkNotFound(meal, String.valueOf(id));
+        checkNotFoundWithId(meal, id);
         return meal;
     }
 
