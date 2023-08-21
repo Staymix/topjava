@@ -24,12 +24,8 @@ public class MealService {
     }
 
     public Meal update(Meal meal, int userId) {
-        Meal updateMeal = repository.save(meal, userId);
-        if (updateMeal == null) {
-            throw new NotFoundException("Meal with such id was not found");
-        }
-        ValidationUtil.checkNotFoundWithId(MealsUtil.belongsToUser(updateMeal, userId), userId);
-        return updateMeal;
+        ValidationUtil.checkNotFound(repository.save(meal, userId), String.valueOf(meal.getId()));
+        return meal;
     }
 
     public void delete(int id, int userId) {

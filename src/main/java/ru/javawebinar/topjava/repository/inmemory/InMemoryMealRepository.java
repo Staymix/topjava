@@ -32,14 +32,12 @@ public class InMemoryMealRepository implements MealRepository {
             repository.put(meal.getId(), meal);
             return meal;
         }
-        Meal updateMeal = getAll(userId).stream()
-                .filter(meal1 -> meal1.getId().equals(meal.getId()))
-                .findFirst()
-                .orElse(null);
-        if (updateMeal == null) return null;
-        meal.setUserId(userId);
-        repository.put(meal.getId(), meal);
-        return meal;
+        Meal existingMeal = repository.get(meal.getId());
+        if (existingMeal != null && existingMeal.getUserId().equals(userId)) {
+            meal.setUserId(userId);
+            return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        }
+        return null;
     }
 
     @Override
