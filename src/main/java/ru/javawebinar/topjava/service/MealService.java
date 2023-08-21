@@ -33,18 +33,12 @@ public class MealService {
     }
 
     public void delete(int id, int userId) {
-        if (!MealsUtil.belongsToUser(get(id, userId), userId)) {
-            throw new NotFoundException("Meal with such id was not found");
-        }
-        repository.delete(id, userId);
+        ValidationUtil.checkNotFound(repository.delete(id, userId), String.valueOf(id));
     }
 
     public Meal get(int id, int userId) {
         Meal meal = repository.get(id, userId);
-        if (meal == null) {
-            throw new NotFoundException("Meal with such id was not found");
-        }
-        ValidationUtil.checkNotFound(MealsUtil.belongsToUser(meal, userId), String.valueOf(id));
+        ValidationUtil.checkNotFound(meal, String.valueOf(id));
         return meal;
     }
 
