@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,28 +29,30 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
-            if (!repository.containsKey(userId)) {
-                repository.put(userId, new HashMap<>());
-            }
-            repository.get(userId).put(meal.getId(), meal);
+            Map<Integer, Meal> meals = repository.computeIfAbsent(userId, userMeals -> new ConcurrentHashMap<>());
+            meals.put(meal.getId(), meal);
             return meal;
         }
-        Meal existingMeal = repository.get(userId).get(meal.getId());
-        if (existingMeal != null) {
-            meal.setUserId(userId);
-            return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
-        }
-        return null;
+        meal.setUserId(userId);
+        return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return repository.get(userId).get(id) != null && repository.get(userId).remove(id) != null;
+        if (isExist(userId)) {
+            Map<Integer, Meal> userMeals = repository.get(userId);
+            return userMeals != null && userMeals.remove(id) != null;
+        }
+        return false;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return repository.get(userId).get(id);
+        if (isExist(userId)) {
+            Map<Integer, Meal> userMeals = repository.get(userId);
+            return userMeals == null ? null : userMeals.get(id);
+        }
+        return null;
     }
 
     @Override
@@ -66,9 +67,17 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     private List<Meal> filteredByPredicate(Predicate<Meal> filter, int userId) {
-        return repository.get(userId).values().stream()
-                .filter(filter)
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
+        if (isExist(userId)) {
+            Map<Integer, Meal> userMeals = repository.get(userId);
+            return userMeals == null ? null : userMeals.values().stream()
+                    .filter(filter)
+                    .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                    .collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    private boolean isExist(int userId) {
+        return repository.containsKey(userId);
     }
 }
