@@ -23,8 +23,7 @@ public class MealService {
     }
 
     public Meal update(Meal meal, int userId) {
-        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
-        return meal;
+        return checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
     public void delete(int id, int userId) {
@@ -32,9 +31,7 @@ public class MealService {
     }
 
     public Meal get(int id, int userId) {
-        Meal meal = repository.get(id, userId);
-        checkNotFoundWithId(meal, id);
-        return meal;
+        return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
     public List<Meal> getAll(int userId) {
