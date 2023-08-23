@@ -6,7 +6,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +61,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     private List<Meal> filteredByPredicate(Predicate<Meal> filter, int userId) {
         Map<Integer, Meal> userMeals = repository.get(userId);
-        return userMeals == null ? new ArrayList<>() : userMeals.values().stream()
+        return userMeals == null ? Collections.emptyList() : userMeals.values().stream()
                 .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
