@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +27,13 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        Map<Integer, Meal> meals;
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            meals = repository.computeIfAbsent(userId, id -> new ConcurrentHashMap<>());
-            meals.put(meal.getId(), meal);
+            repository.computeIfAbsent(userId, id -> new ConcurrentHashMap<>()).put(meal.getId(), meal);
             return meal;
         }
-        return isExist(userId) ? repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals == null ? null : meals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
@@ -61,13 +61,9 @@ public class InMemoryMealRepository implements MealRepository {
 
     private List<Meal> filteredByPredicate(Predicate<Meal> filter, int userId) {
         Map<Integer, Meal> userMeals = repository.get(userId);
-        return userMeals == null ? null : userMeals.values().stream()
+        return userMeals == null ? new ArrayList<>() : userMeals.values().stream()
                 .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-    }
-
-    private boolean isExist(int userId) {
-        return repository.containsKey(userId);
     }
 }
