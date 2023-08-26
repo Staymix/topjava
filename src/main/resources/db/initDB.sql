@@ -8,7 +8,7 @@ CREATE SEQUENCE global_seq START WITH 100000;
 CREATE TABLE users
 (
     id               integer PRIMARY KEY DEFAULT nextval('global_seq'),
-    user_name        varchar                           NOT NULL,
+    name             varchar                           NOT NULL,
     email            varchar                           NOT NULL,
     password         varchar                           NOT NULL,
     registered       timestamp           DEFAULT now() NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE user_role
 
 CREATE TABLE meals
 (
-    id          serial     PRIMARY KEY,
+    id          serial      PRIMARY KEY,
     user_id     integer     REFERENCES users(id) ON DELETE CASCADE,
     date_time   timestamp   NOT NULL,
     description varchar(32) NOT NULL,
