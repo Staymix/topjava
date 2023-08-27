@@ -1,6 +1,9 @@
-DELETE FROM user_role;
-DELETE FROM users;
+TRUNCATE TABLE meals CASCADE ;
+TRUNCATE TABLE user_role CASCADE ;
+TRUNCATE TABLE users CASCADE ;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
+ALTER SEQUENCE global_seq_meal RESTART WITH 1;
+
 
 INSERT INTO users (name, email, password)
 VALUES ('User', 'user@yandex.ru', 'password'),
