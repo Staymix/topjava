@@ -10,19 +10,16 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.Util;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
-    private static final BeanPropertyRowMapper ROW_MAPPER = new BeanPropertyRowMapper().newInstance(Meal.class);
+    private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private SimpleJdbcInsert insertMeal;
+    private final SimpleJdbcInsert insertMeal;
 
     @Autowired
     public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -66,20 +63,13 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getByUser(userId);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id =? ORDER BY date_time DESC",
+                ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        List<Meal> meals = getByUser(userId);
-        return meals.stream()
-                .filter(meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime))
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
-    }
-
-    private List<Meal> getByUser(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id =? ORDER BY date_time DESC",
-                ROW_MAPPER, userId);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id =? AND date_time >=? AND date_time < ? " +
+                "ORDER BY date_time DESC", ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }
