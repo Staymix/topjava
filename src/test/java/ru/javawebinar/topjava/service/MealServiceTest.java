@@ -31,7 +31,7 @@ public class MealServiceTest {
     @Test
     public void get() {
         Meal meal = service.get(MEAL_ID, USER_ID);
-        assertThat(meal).isEqualToIgnoringGivenFields(MEAL, "id");
+        assertThat(meal).isEqualTo(MEAL);
     }
 
     @Test
@@ -62,8 +62,8 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenInclusive() {
-        List<Meal> meals = service.getBetweenInclusive(START_END_DATE, START_END_DATE, USER_ID);
-        assertThat(meals).isEqualTo(MEALS_USER);
+        List<Meal> meals = service.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
+        assertThat(meals).isEqualTo(MEALS_USER_BETWEEN_INCLUSIVE);
     }
 
     @Test
