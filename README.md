@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/bee16f3145654047a0505c62aeefd8a2)](https://www.codacy.com/gh/staymix/topjava/dashboard)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/bee16f3145654047a0505c62aeefd8a2)](https://app.codacy.com/gh/Staymix/topjava/dashboard)
 
 Java Enterprise Online Project 
 ===============================
