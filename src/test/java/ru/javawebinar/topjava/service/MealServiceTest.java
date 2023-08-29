@@ -8,13 +8,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -34,7 +32,7 @@ public class MealServiceTest {
     @Test
     public void get() {
         Meal meal = service.get(USER_MEAL_ID, USER_ID);
-        assertThat(meal).usingRecursiveComparison().isEqualTo(MealTestData.userMeal);
+        assertMatch(meal, userMeal);
     }
 
     @Test
@@ -66,20 +64,20 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusive() {
         List<Meal> meals = service.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
-        assertThat(meals).usingRecursiveComparison().isEqualTo(userMealsBetweenInclusive);
+        assertMatch(meals, userMealsBetweenInclusive);
     }
 
     @Test
     public void getAll() {
         List<Meal> meals = service.getAll(USER_ID);
-        assertThat(meals).usingRecursiveComparison().isEqualTo(userMeals);
+        assertMatch(meals, userMeals);
     }
 
     @Test
     public void update() {
         Meal updated = getUpdated();
         service.update(getUpdated(), USER_ID);
-        assertThat(service.get(updated.getId(), USER_ID)).usingRecursiveComparison().isEqualTo(updated);
+        assertMatch(service.get(updated.getId(), USER_ID), updated);
     }
 
     @Test
@@ -91,9 +89,9 @@ public class MealServiceTest {
     @Test
     public void create() {
         Meal created = service.create(getNew(), USER_ID);
-        assertThat(created).usingRecursiveComparison().isEqualTo(createMeal);
+        assertMatch(created, createMeal);
         Integer newId = created.getId();
-        assertThat(service.get(newId, USER_ID)).usingRecursiveComparison().isEqualTo(createMeal);
+        assertMatch(service.get(newId, USER_ID), createMeal);
     }
 
     @Test

@@ -8,6 +8,7 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
@@ -57,4 +58,13 @@ public class MealTestData {
     public static Meal getDuplicateDateTime() {
         return new Meal(userMeal.getDateTime(), "duplicateByDateTime", 1000);
     }
+
+    public static void assertMatch(Meal actual, Meal expected) {
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
 }
