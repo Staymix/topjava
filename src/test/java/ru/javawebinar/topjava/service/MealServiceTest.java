@@ -46,12 +46,9 @@ public class MealServiceTest {
 
         @Override
         protected void finished(long nanos, Description description) {
-            logInfo(description, nanos);
-            results.add(new TestResult(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
-        }
-
-        private void logInfo(Description description, long nanos) {
-            log.info("{} {} ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            long testDuration = TimeUnit.NANOSECONDS.toMillis(nanos);
+            log.info("{} {} ms", description.getMethodName(), testDuration);
+            results.add(new TestResult(description.getMethodName(), testDuration));
         }
     };
 
