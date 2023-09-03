@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
-import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Stopwatch;
@@ -40,32 +39,19 @@ public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private static void logInfo(Description description, long nanos) {
-        log.info("{} {} ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-    }
-
     private static final List<TestResult> results = new ArrayList<>();
 
     @Rule
     public final Stopwatch stopwatch = new Stopwatch() {
-        @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, nanos);
-        }
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            logInfo(description, nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            logInfo(description, nanos);
-        }
 
         @Override
         protected void finished(long nanos, Description description) {
+            logInfo(description, nanos);
             results.add(new TestResult(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
+        }
+
+        private void logInfo(Description description, long nanos) {
+            log.info("{} {} ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
         }
     };
 
