@@ -1,10 +1,10 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
+import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -39,48 +40,42 @@ public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private long startTime;
+    private static void logInfo(Description description, long nanos) {
+        log.info("{} {} ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+    }
 
     private static final List<TestResult> results = new ArrayList<>();
 
-    private TestResult testResult;
-
     @Rule
-    public final TestRule watch = new TestWatcher() {
+    public final Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void starting(Description description) {
-            testResult = new TestResult();
-            startTime = System.currentTimeMillis();
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, nanos);
         }
 
         @Override
-        protected void succeeded(Description description) {
-            testResult.setResult("successful");
-            logExecuteTest(System.currentTimeMillis(), description.getMethodName());
+        protected void failed(long nanos, Throwable e, Description description) {
+            logInfo(description, nanos);
         }
 
         @Override
-        protected void failed(Throwable e, Description description) {
-            testResult.setResult("failed");
-            logExecuteTest(System.currentTimeMillis(), description.getMethodName());
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            logInfo(description, nanos);
         }
 
-        private void logExecuteTest(long endTime, String nameTest) {
-            testResult.setTestName(nameTest);
-            testResult.setStartTime(startTime);
-            testResult.setEndTime(endTime);
-            results.add(testResult);
-            log.info("Execution time: {} ms", endTime - startTime);
+        @Override
+        protected void finished(long nanos, Description description) {
+            results.add(new TestResult(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
         }
     };
 
     @AfterClass
     public static void logSummary() {
-        log.info("Test execution summary: ");
+        StringBuilder timeTestResult = new StringBuilder();
         for (TestResult result : results) {
-            log.info("Test {} has been {} executed. Execution time: {} ms",
-                    result.getTestName(), result.getResult(), result.getExecutionTime());
+            timeTestResult.append(String.format("\n%-23s %4d ms", result.getTestName(), result.getTime()));
         }
+        log.info("\nTest execution summary: " + timeTestResult);
     }
 
     @Autowired
