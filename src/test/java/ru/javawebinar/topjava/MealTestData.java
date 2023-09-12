@@ -4,6 +4,7 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
@@ -40,5 +41,9 @@ public class MealTestData {
         Meal meal = meal1;
         meal.setUser(UserTestData.user);
         return meal;
+    }
+
+    public static List<Meal> getUserMeals() {
+        return Arrays.asList(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
     }
 }
