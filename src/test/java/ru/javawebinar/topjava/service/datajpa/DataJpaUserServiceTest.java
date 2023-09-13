@@ -13,7 +13,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
-import static ru.javawebinar.topjava.MealTestData.getUserMeals;
+import static ru.javawebinar.topjava.MealTestData.meals;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ActiveProfiles(Profiles.DATAJPA)
@@ -24,7 +24,7 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
         User userWithMeals = service.getWithMeals(USER_ID);
         USER_MATCHER.assertMatch(userWithMeals, user);
         List<Meal> userMeals = userWithMeals.getMeals();
-        MEAL_MATCHER.assertMatch(userMeals, getUserMeals());
+        MEAL_MATCHER.assertMatch(userMeals, meals);
     }
 
     @Test
