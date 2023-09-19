@@ -1,19 +1,20 @@
-DELETE FROM user_role;
-DELETE FROM meal;
-DELETE FROM users;
-ALTER SEQUENCE global_seq RESTART WITH 100000;
+delete from user_role;
+delete from meal;
+delete from users;
+alter SEQUENCE global_seq RESTART with 100000;
 
-INSERT INTO users (name, email, password)
-VALUES ('User', 'user@yandex.ru', 'password'),
+insert into users (name, email, password)
+values ('User', 'user@yandex.ru', 'password'),
        ('Admin', 'admin@gmail.com', 'admin'),
        ('Guest', 'guest@gmail.com', 'guest');
 
-INSERT INTO user_role (role, user_id)
-VALUES ('USER', 100000),
-       ('ADMIN', 100001);
+insert into user_role (role, user_id)
+values ('USER', 100000),
+       ('ADMIN', 100001),
+       ('ADMIN', 100000);
 
-INSERT INTO meal (date_time, description, calories, user_id)
-VALUES ('2020-01-30 10:00:00', 'Завтрак', 500, 100000),
+insert into meal (date_time, description, calories, user_id)
+values ('2020-01-30 10:00:00', 'Завтрак', 500, 100000),
        ('2020-01-30 13:00:00', 'Обед', 1000, 100000),
        ('2020-01-30 20:00:00', 'Ужин', 500, 100000),
        ('2020-01-31 0:00:00', 'Еда на граничное значение', 100, 100000),
