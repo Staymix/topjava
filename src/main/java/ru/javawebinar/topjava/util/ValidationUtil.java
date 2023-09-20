@@ -21,10 +21,10 @@ public class ValidationUtil {
     private ValidationUtil() {
     }
 
-    public static <T> void validation(T object) {
+    public static <T> void validate(T object) {
         Set<ConstraintViolation<T>> violations =  validator.validate(object);
         if (!violations.isEmpty()) {
-            throw new ValidationException();
+            throw new ConstraintViolationException(violations);
         }
     }
 

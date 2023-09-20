@@ -11,7 +11,7 @@ values ('User', 'user@yandex.ru', 'password'),
 insert into user_role (role, user_id)
 values ('USER', 100000),
        ('ADMIN', 100001),
-       ('ADMIN', 100000);
+       ('USER', 100001);
 
 insert into meal (date_time, description, calories, user_id)
 values ('2020-01-30 10:00:00', 'Завтрак', 500, 100000),
