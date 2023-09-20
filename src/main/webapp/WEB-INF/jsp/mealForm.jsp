@@ -8,10 +8,11 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <section>
-    <h2><spring:message code="meal.edit"/></h2>
+    <h2><spring:message code="${param.id ne null ? 'meal.edit' : 'meal.create'}"/></h2>
 
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="http://localhost:8080/topjava/meals">
+
+    <form method="post" action="${pageContext.request.contextPath}/meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.dateTime"/>:</dt>
