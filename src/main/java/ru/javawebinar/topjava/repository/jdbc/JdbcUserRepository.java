@@ -52,14 +52,14 @@ public class JdbcUserRepository implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            batchInsert(user);
+            batchInsertRoles(user);
             return user;
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
                 """, parameterSource) != 0) {
-            deleteRole(user);
-            batchInsert(user);
+            deleteRoles(user);
+            batchInsertRoles(user);
             return user;
         }
         return null;
@@ -74,25 +74,25 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
-        return setRole(DataAccessUtils.singleResult(users));
+        return setRoles(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public User getByEmail(String email) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        return setRole(Objects.requireNonNull(DataAccessUtils.singleResult(users)));
+        return setRoles(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public List<User> getAll() {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        for (User user : users) {
-            setRole(user);
-        }
-        return users;
+        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", (rs, rowNum) -> {
+            User user = ROW_MAPPER.mapRow(rs, rowNum);
+            setRoles(user);
+            return user;
+        });
     }
 
-    private void batchInsert(User user) {
+    private void batchInsertRoles(User user) {
         Iterator<Role> iterator = user.getRoles().iterator();
         jdbcTemplate.batchUpdate(
                 "INSERT INTO user_role (user_id, role) VALUES (?, ?)",
@@ -111,11 +111,11 @@ public class JdbcUserRepository implements UserRepository {
         );
     }
 
-    private void deleteRole(User user) {
+    private void deleteRoles(User user) {
         jdbcTemplate.update("DELETE FROM user_role WHERE user_id=? ", user.id());
     }
 
-    private User setRole(User user) {
+    private User setRoles(User user) {
         if (user == null) {
             return null;
         }
