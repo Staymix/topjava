@@ -57,7 +57,6 @@ public class User extends AbstractNamedEntity {
 //    @Fetch(FetchMode.SUBSELECT)
     @BatchSize(size = 200)
     @JoinColumn
-    @NotEmpty
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 

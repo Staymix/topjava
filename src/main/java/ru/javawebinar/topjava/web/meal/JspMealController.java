@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
@@ -29,8 +27,8 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/delete")
-    public String delete(HttpServletRequest request) {
-        super.delete(Integer.parseInt(Objects.requireNonNull(request.getParameter("id"))));
+    public String delete(@RequestParam Integer id) {
+        super.delete(id);
         return ("redirect:/meals");
     }
 

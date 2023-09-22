@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,13 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         User updated = getUpdated();
         service.update(updated);
         USER_MATCHER.assertMatch(service.get(USER_ID), getUpdated());
+    }
+
+    @Test
+    public void updateWithoutRoles() {
+        User admin = service.get(ADMIN_ID);
+        admin.setRoles(Set.of());
+        USER_MATCHER.assertMatch(admin, getWithoutRole());
     }
 
     @Test
