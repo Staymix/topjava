@@ -30,11 +30,10 @@ public abstract class AbstractMealController {
         return service.get(id, userId);
     }
 
-    public String delete(int id) {
+    public void delete(int id) {
         int userId = SecurityUtil.authUserId();
         log.info("delete meal {} for user {}", id, userId);
         service.delete(id, userId);
-        return null;
     }
 
     public List<MealTo> getAll() {

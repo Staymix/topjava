@@ -95,9 +95,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void updateWithoutRoles() {
-        User adminWithoutRoles = new User (ADMIN_ID, "Admin", "admin@gmail.com", "admin");
-        service.update(adminWithoutRoles);
-        USER_MATCHER.assertMatch(service.get(ADMIN_ID), adminWithoutRoles);
+        service.update(getWithoutRole());
+        USER_MATCHER.assertMatch(service.get(ADMIN_ID), getWithoutRole());
     }
 
     @Test
