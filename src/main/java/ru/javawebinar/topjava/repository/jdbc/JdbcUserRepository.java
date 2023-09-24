@@ -5,7 +5,6 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -17,10 +16,8 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
 
 @Repository
 @Transactional(readOnly = true)
@@ -90,7 +87,7 @@ public class JdbcUserRepository implements UserRepository {
         Map<Integer, Set<Role>> map = new HashMap<>();
         jdbcTemplate.query("SELECT * FROM user_role", rs -> {
             map.computeIfAbsent(rs.getInt("user_id"),
-                    userId -> EnumSet.noneOf(Role.class))
+                            userId -> EnumSet.noneOf(Role.class))
                     .add(Role.valueOf(rs.getString("role")));
         });
         users.forEach(user -> user.setRoles(map.get(user.getId())));
