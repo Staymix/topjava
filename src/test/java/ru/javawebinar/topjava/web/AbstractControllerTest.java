@@ -20,8 +20,6 @@ import javax.annotation.PostConstruct;
         "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-db.xml"
 })
-//@WebAppConfiguration
-//@ExtendWith(SpringExtension.class)
 @Transactional
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class, profiles = Profiles.REPOSITORY_IMPLEMENTATION)
 public abstract class AbstractControllerTest {
@@ -37,6 +35,10 @@ public abstract class AbstractControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+//    protected void checkProfile() {
+//
+//    }
 
     @PostConstruct
     private void postConstruct() {
