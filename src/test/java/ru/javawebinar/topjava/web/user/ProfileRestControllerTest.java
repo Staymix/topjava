@@ -48,10 +48,11 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
+        checkDataJpaProfilesActive();
         perform(MockMvcRequestBuilders.get(REST_URL + "/with-meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(JsonUtil.writeIgnoreProps(user, "registered")));
+                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(userWithMeals));
     }
 }

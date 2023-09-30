@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava.web;
 
+import org.junit.jupiter.api.Assumptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,8 +22,6 @@ import javax.annotation.PostConstruct;
         "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-db.xml"
 })
-//@WebAppConfiguration
-//@ExtendWith(SpringExtension.class)
 @Transactional
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class, profiles = Profiles.REPOSITORY_IMPLEMENTATION)
 public abstract class AbstractControllerTest {
@@ -37,6 +37,14 @@ public abstract class AbstractControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private Environment environment;
+
+    public void checkDataJpaProfilesActive() {
+        Assumptions.assumeTrue(environment.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA)),
+                "The test requires active Data JPA profile");
+    }
 
     @PostConstruct
     private void postConstruct() {
