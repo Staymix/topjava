@@ -57,9 +57,9 @@ public class AdminRestController extends AbstractUserController {
         return super.getByMail(email);
     }
 
-    @GetMapping("/with-meals/{id}")
+    @Override
+    @GetMapping("/{id}/with-meals")
     public User getWithMeals(@PathVariable int id) {
-        User user = super.getWithMeals(id);
-        return user;
+        return super.getWithMeals(id);
     }
 }
