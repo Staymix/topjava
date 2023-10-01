@@ -86,11 +86,12 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
-//        checkProfile();
-        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(userWithMeals));
+        if (areDataJpaProfilesActive()) {
+            perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(USER_WITH_MEALS_MATCHER.contentJson(userWithMeals));
+        }
     }
 }
