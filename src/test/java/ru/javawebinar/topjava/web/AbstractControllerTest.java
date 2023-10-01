@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web;
 
+import org.junit.jupiter.api.Assumptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
@@ -40,8 +41,9 @@ public abstract class AbstractControllerTest {
     @Autowired
     private Environment environment;
 
-    public boolean areDataJpaProfilesActive() {
-        return environment.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA));
+    public void isDataJpaProfilesActive() {
+        Assumptions.assumeTrue(environment.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA)),
+                "The test requires active Data JPA profile");
     }
 
     @PostConstruct
