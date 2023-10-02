@@ -41,7 +41,7 @@ public abstract class AbstractControllerTest {
     @Autowired
     private Environment environment;
 
-    public void isDataJpaProfilesActive() {
+    public void checkDataJpaProfilesActive() {
         Assumptions.assumeTrue(environment.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA)),
                 "The test requires active Data JPA profile");
     }
