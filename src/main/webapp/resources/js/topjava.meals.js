@@ -11,10 +11,8 @@ const ctx = {
     },
 
     resetFilter() {
-        $.ajax({
-            type: "GET",
-            url: mealAjaxUrl,
-        }).done(updateTableCommon);
+        $("#filter")[0].reset();
+        $.get(mealAjaxUrl, updateTableCommon);
     }
 };
 

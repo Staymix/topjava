@@ -9,6 +9,19 @@ const ctx = {
 };
 // $(document).ready(function () {
 
+function enable(checkbox, id) {
+    var enabled = checkbox.is(":checked");
+    $.ajax({
+        url: userAjaxUrl + id,
+        type: "POST",
+        data: "enabled=" + enabled
+    }).done(function () {
+        checkbox.closest("tr").attr("data-user-enabled", enabled);
+        successNoty(enabled ? "Запись активирована" : "Запись деактивирована");
+        ctx.updateTable();
+    });
+}
+
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
