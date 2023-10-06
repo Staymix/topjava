@@ -18,7 +18,6 @@ function enable(checkbox, id) {
     }).done(function () {
         checkbox.closest("tr").attr("data-user-enabled", enabled);
         successNoty(enabled ? "Запись активирована" : "Запись деактивирована");
-        ctx.updateTable();
     });
 }
 

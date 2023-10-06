@@ -89,7 +89,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void toggleUserEnableStatus() {
-        service.toggleUserEnableStatus(USER_ID, false);
+        service.toggleEnableStatus(USER_ID, false);
         assertFalse(service.get(USER_ID).isEnabled());
     }
 }

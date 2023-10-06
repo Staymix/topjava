@@ -56,6 +56,6 @@ public abstract class AbstractUserController {
 
     public void toggleUserEnableStatus(int id, boolean enable) {
         log.info("toggleUserEnableStatus {}, status {}", id, enable);
-        service.toggleUserEnableStatus(id, enable);
+        service.toggleEnableStatus(id, enable);
     }
 }
