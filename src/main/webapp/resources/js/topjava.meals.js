@@ -72,19 +72,39 @@ let startTime = $("#startTime");
 let endTime = $("#endTime");
 startDate.datetimepicker({
     timepicker: false,
-    format: 'Y-m-d'
+    format: 'Y-m-d',
+    onShow: function (ct) {
+        this.setOptions({
+            maxDate: endDate.val() ? endDate.val() : false
+        })
+    }
 });
 endDate.datetimepicker({
     timepicker: false,
-    format: 'Y-m-d'
+    format: 'Y-m-d',
+    onShow: function (ct) {
+        this.setOptions({
+            minDate: startDate.val() ? startDate.val() : false
+        })
+    }
 });
 startTime.datetimepicker({
     datepicker: false,
-    format: 'H:i'
+    format: 'H:i',
+    onShow: function (ct) {
+        this.setOptions({
+            maxDate: startTime.val() ? startTime.val() : false
+        })
+    }
 });
 endTime.datetimepicker({
     datepicker: false,
-    format: 'H:i'
+    format: 'H:i',
+    onShow: function (ct) {
+        this.setOptions({
+            minTime: endTime.val() ? endTime.val() : false
+        })
+    }
 });
 
 $("#dateTime").datetimepicker({
