@@ -93,7 +93,7 @@ startTime.datetimepicker({
     format: 'H:i',
     onShow: function (ct) {
         this.setOptions({
-            maxDate: startTime.val() ? startTime.val() : false
+            maxDate: endTime.val() ? endTime.val() : false
         })
     }
 });
@@ -102,7 +102,7 @@ endTime.datetimepicker({
     format: 'H:i',
     onShow: function (ct) {
         this.setOptions({
-            minTime: endTime.val() ? endTime.val() : false
+            minTime: startTime.val() ? startTime.val() : false
         })
     }
 });
