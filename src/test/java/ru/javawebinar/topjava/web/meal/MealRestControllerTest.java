@@ -124,4 +124,32 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
     }
+
+    @Test
+    void createNotValidation() throws Exception {
+        Meal newMeal = getNew();
+        newMeal.setDescription(null);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(newMeal)))
+                .andExpect(status().is4xxClientError());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            MEAL_MATCHER.readFromJson(action);
+        });
+    }
+
+    @Test
+    void updateNotValidation() throws Exception {
+        Meal updated = getUpdated();
+        updated.setDescription(null);
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().is4xxClientError());
+
+        MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), meal1);
+    }
+
 }
