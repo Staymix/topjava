@@ -53,17 +53,11 @@ public class MealRestController extends AbstractMealController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal) {
-        try {
             Meal created = super.create(meal);
             URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path(REST_URL + "/{id}")
                     .buildAndExpand(created.getId()).toUri();
-
             return ResponseEntity.created(uriOfNewResource).body(created);
-        } catch (
-                DataIntegrityViolationException e) {
-            throw new DataIntegrityViolationException("Meal with this dateTime already exists");
-        }
     }
 
     @Override

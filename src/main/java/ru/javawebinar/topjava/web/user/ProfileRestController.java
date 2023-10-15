@@ -47,11 +47,7 @@ public class ProfileRestController extends AbstractUserController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody UserTo userTo) {
-        try {
             super.update(userTo, authUserId());
-        } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityViolationException("User with this email already exists");
-        }
     }
 
     @GetMapping("/text")

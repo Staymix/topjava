@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.to.UserTo;
@@ -91,7 +93,6 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     @Test
     void registerNotValidation() throws Exception {
         UserTo newTo = new UserTo(null, null, "newemail@ya.ru", "newPassword", 1500);
-        User newUser = UsersUtil.createNewFromTo(newTo);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newTo)))
@@ -111,6 +112,34 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
+
+        USER_MATCHER.assertMatch(userService.get(USER_ID), user);
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void registerDuplicateEmail() throws Exception {
+        UserTo newTo = new UserTo(null, "qwert", "admin@gmail.com", "newPassword", 1500);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            USER_MATCHER.readFromJson(action);
+        });
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void updateDuplicateEmail() throws Exception {
+        UserTo updatedTo = new UserTo(null, "qwert", "admin@gmail.com", "newPassword", 1500);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andDo(print())
+                .andExpect(status().isConflict());
 
         USER_MATCHER.assertMatch(userService.get(USER_ID), user);
     }
