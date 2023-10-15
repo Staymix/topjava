@@ -2,10 +2,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <nav class="navbar navbar-dark bg-dark py-0">
     <div class="container">
-        <a href="meals" class="navbar-brand"><img src="resources/images/icon-meal.png"> <spring:message code="app.title"/></a>
+        <a href="meals" class="navbar-brand"><img src="resources/images/icon-meal.png"> <spring:message
+                code="app.title"/></a>
         <sec:authorize access="isAuthenticated()">
             <form:form class="form-inline my-2" action="logout" method="post">
                 <sec:authorize access="hasRole('ADMIN')">
@@ -26,5 +28,15 @@
                 </button>
             </form:form>
         </sec:authorize>
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <spring:message code="common.language"/>
+            </button>
+            <ul class="dropdown-menu">
+                <c:set var="currentUrl" value="${requestScope['javax.servlet.forward.servlet_path']}"/>
+                <li><a class="dropdown-item" href="<c:url value="${currentUrl}?lg=en"/>">English</a></li>
+                <li><a class="dropdown-item" href="<c:url value="${currentUrl}?lg=ru"/>">Русский</a></li>
+            </ul>
+        </div>
     </div>
 </nav>
