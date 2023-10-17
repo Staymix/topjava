@@ -128,7 +128,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newTo)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.type").value(ErrorType.DATA_ERROR.name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()))
                 .andExpect(status().isConflict());
 
         assertThrows(IllegalArgumentException.class, () -> {

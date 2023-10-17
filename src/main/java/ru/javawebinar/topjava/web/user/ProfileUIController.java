@@ -24,25 +24,32 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping
     public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status) {
+        if (result.hasErrors()) {
+            return "profile";
+        }
         try {
             super.update(userTo, SecurityUtil.authUserId());
             status.setComplete();
             return "redirect:/meals";
         } catch (DataIntegrityViolationException e) {
-            result.reject("email", "user.email.duplicate");
+            result.rejectValue("email", "user.email.duplicate");
             return "profile";
         }
     }
 
     @PostMapping("/register")
     public String saveRegister(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
+        if (result.hasErrors()) {
+            model.addAttribute("register", true);
+            return "profile";
+        }
         try {
             super.create(userTo);
             status.setComplete();
             return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
         } catch (DataIntegrityViolationException e) {
             model.addAttribute("register", true);
-            result.reject("email", "user.email.duplicate");
+            result.rejectValue("email", "user.email.duplicate");
             return "profile";
         }
     }
