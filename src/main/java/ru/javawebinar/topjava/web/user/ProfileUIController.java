@@ -29,6 +29,7 @@ public class ProfileUIController extends AbstractUserController {
         }
         try {
             super.update(userTo, SecurityUtil.authUserId());
+            SecurityUtil.get().setTo(userTo);
             status.setComplete();
             return "redirect:/meals";
         } catch (DataIntegrityViolationException e) {
