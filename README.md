@@ -43,9 +43,20 @@
 -----------------------------------------------------
 
 ### Пример UI 
-Странница при входе в приложение:
+> #### Странница входа в приложение:
 <img src="https://ltdfoto.ru/images/2023/12/18/top1.png" width="1000px">
-Страница регистрации:
+
+> #### Страница регистрации:
 <img src="https://ltdfoto.ru/images/2023/12/18/top2.png" width="1000px">
-Страница еды пользователя:
+
+> #### Страница редактирования профиля:
+<img src="https://ltdfoto.ru/images/2023/12/18/top4.png" width="1000px">
+
+> #### Страница всех пользователей(для роли ADMIN):
+<img src="https://ltdfoto.ru/images/2023/12/18/top5.png" width="1000px">
+
+> #### Вся еда пользователя:
 <img src="https://ltdfoto.ru/images/2023/12/18/top3.png" width="1000px">
+
+> #### Создание новой еды:
+<img src="https://ltdfoto.ru/images/2023/12/18/top6.png" width="1000px">
