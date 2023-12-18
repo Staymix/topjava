@@ -43,4 +43,9 @@
 -----------------------------------------------------
 
 ### Пример UI 
-
+Странница при входе в приложение:
+<img src="https://ltdfoto.ru/images/2023/12/18/top1.png" width="1000px">
+Страница регистрации:
+<img src="https://ltdfoto.ru/images/2023/12/18/top2.png" width="1000px">
+Страница еды пользователя:
+<img src="https://ltdfoto.ru/images/2023/12/18/top3.png" width="1000px">
